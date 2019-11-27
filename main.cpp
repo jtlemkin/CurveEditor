@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include "Bezier.h"
+#include "CurveManager.h"
 
 void init();
 void display();
@@ -23,13 +24,14 @@ void mouse(int button, int state, int x, int y);
 void check();
 void reshape(int width, int height);
 void idle();
+void arrowkey(int key, int x, int y);
 void draw_pix(float x, float y, float r, float g, float b);
 void pix_to_norm(float* x, float* y);
 
-int screen_width = 400;
-int screen_height = 400;
+int screen_width = 500;
+int screen_height = 500;
 
-std::vector<Bezier> curves;
+std::vector<CurveManager> cm;
 
 int main(int argc, char **argv) {
   glutInit(&argc, argv);
@@ -42,11 +44,12 @@ int main(int argc, char **argv) {
   glutMouseFunc(mouse);     //mouse button events
   glutKeyboardFunc(key);    //Keyboard events
   //glutIdleFunc(idle);       //Function called while program is sitting "idle"
+  glutSpecialFunc(arrowkey);
 
   //initialize opengl variables
   init();
 
-  curves.emplace_back();
+  cm.emplace_back();
 
   //start glut event loop
   glutMainLoop();
@@ -91,7 +94,7 @@ void reshape(int width, int height) {
 //called repeatedly when glut isn't doing anything else
 void idle() {
   //redraw the scene over and over again
-  glutPostRedisplay();
+  //glutPostRedisplay();
 }
 
 //this is where we render the screen
@@ -101,12 +104,7 @@ void display() {
   //clears the opengl Modelview transformation matrix
   glLoadIdentity();
 
-  glBegin(GL_LINES);
-  glColor3f(1, 0, 1);
-    for(const auto& points : curves.back().getPoints()) {
-      glVertex2f(points.getX(), points.getY());
-    }
-  glEnd();
+  cm[0].displayCurves();
 
   //blits the current opengl framebuffer on the screen
   glutSwapBuffers();
@@ -117,6 +115,21 @@ void display() {
 //gets called when a key is pressed on the keyboard
 void key(unsigned char ch, int x, int y)
 {
+  switch (ch) {
+    case '\t':
+      cm[0].selectNextCurve();
+      break;
+    case 'n':
+      cm[0].addCurve();
+      break;
+    case 'd':
+      cm[0].deletePoint();
+      break;
+    case 'm':
+      cm[0].toggleModifying();
+    default:
+      break;
+  }
   //redraw the scene after keyboard input
   glutPostRedisplay();
 }
@@ -130,7 +143,12 @@ void mouse(int button, int state, int x, int y)
     float yf = y;
 
     pix_to_norm(&xf, &yf);
-    curves.back().addPoint(xf, yf);
+
+    if (cm[0].isModifying()) {
+      cm[0].modifyPoint(xf, yf);
+    } else {
+      cm[0].addPoint(xf, yf);
+    }
   }
 
   glutPostRedisplay();
@@ -159,3 +177,17 @@ void pix_to_norm(float* x, float* y) {
     glVertex3f(pix_to_norm(x), pix_to_norm(y), 0);
   glEnd();
 }*/
+
+void arrowkey(int key, int x, int y) {
+  switch(key) {
+    case GLUT_KEY_RIGHT:
+      cm[0].selectNextPoint();
+      break;
+    case GLUT_KEY_LEFT:
+      cm[0].selectPreviousPoint();
+    default:
+      break;
+  }
+
+  glutPostRedisplay();
+}

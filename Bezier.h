@@ -5,24 +5,45 @@
 #ifndef HW4_BEZIER_H
 #define HW4_BEZIER_H
 
-#include <vector>
+#ifdef WIN32
+#include <windows.h>
+#endif
 
-class Pointf {
-  float x, y;
- public:
-  float getX() const;
-  float getY() const;
- public:
-  Pointf(float x, float y);
-};
+#if defined (__APPLE__) || defined(MACOSX)
+#define GL_SILENCE_DEPRECATION
+#include <OpenGL/gl.h>
+//#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
+
+#else //linux
+#include <GL/gl.h>
+#include <GL/glut.h>
+#endif
+
+#include <vector>
+#include "Pointf.h"
 
 class Bezier {
   std::vector<Pointf> points;
+  bool selected;
+
+  Pointf computePoint(float u) const;
  public:
   Bezier();
 
-  void addPoint(float x, float y);
-  const std::vector<Pointf> &getPoints() const;
+  std::vector<Pointf> &getPoints();
+
+  void display(int resolution) const;
+
+  void select();
+  void deselect();
+  void addPoint(float x, float y, int point_index);
+
+  void deletePoint(int point_index);
+
+  void modifyPoint(float x, float y, int point_index);
+
+  int getNumPoints();
 };
 
 #endif //HW4_BEZIER_H
