@@ -22,18 +22,20 @@
 
 #include <vector>
 #include "Pointf.h"
+#include "Mode.h"
 
-class Bezier {
+class Curve {
   std::vector<Pointf> points;
   bool selected;
 
-  Pointf computePoint(float u) const;
+  Pointf computeBezierPoint(float u) const;
  public:
-  Bezier();
+  Curve();
 
   std::vector<Pointf> &getPoints();
 
-  void display(int resolution) const;
+  void display(int resolution, Mode mode) const;
+  void displayBezier(int resolution) const;
 
   void select();
   void deselect();

@@ -5,18 +5,21 @@
 #ifndef HW4_CURVEMANAGER_H
 #define HW4_CURVEMANAGER_H
 
-#include "Bezier.h"
+#include "Curve.h"
+#include "Mode.h"
 
 class CurveManager {
-  std::vector<Bezier> curves;
+  std::vector<Curve> curves;
 
   int curve_index;
   int point_index;
 
   bool modifying;
 
+  Mode mode;
+
   Pointf& getSelectedPoint();
-  Bezier& getSelectedCurve();
+  Curve& getSelectedCurve();
 
  public:
   CurveManager();

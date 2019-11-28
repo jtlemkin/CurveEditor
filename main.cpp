@@ -14,7 +14,7 @@
 #endif
 
 #include <iostream>
-#include "Bezier.h"
+#include "Curve.h"
 #include "CurveManager.h"
 
 void init();

@@ -11,11 +11,13 @@ CurveManager::CurveManager() {
   point_index = 0;
 
   modifying = false;
+
+  mode = bezier;
 }
 
 void CurveManager::displayCurves() {
   for (const auto& curve : curves) {
-    curve.display(10);
+    curve.display(100, mode);
   }
 
   if (getSelectedCurve().getNumPoints() != 0) {
@@ -85,7 +87,7 @@ void CurveManager::selectPreviousPoint() {
 Pointf& CurveManager::getSelectedPoint() {
   return getSelectedCurve().getPoints().at(point_index);
 }
-Bezier& CurveManager::getSelectedCurve() {
+Curve& CurveManager::getSelectedCurve() {
   return curves.at(curve_index);
 }
 void CurveManager::deletePoint() {
