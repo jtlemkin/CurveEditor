@@ -25,17 +25,31 @@
 #include "Mode.h"
 
 class Curve {
+ private:
+
   std::vector<Pointf> points;
   bool selected;
+  int order;
+ public:
+  void setOrder(int newOrder);
+ private:
+
+  std::vector<float> knots;
 
   Pointf computeBezierPoint(float u) const;
+  Pointf computeSplinePoint(float u) const;
+
+  int getEffectiveOrder() const;
+
  public:
   Curve();
 
   std::vector<Pointf> &getPoints();
+  std::vector<float>& getKnots();
 
   void display(int resolution, Mode mode) const;
   void displayBezier(int resolution) const;
+  void displaySpline(int resolution) const;
 
   void select();
   void deselect();
@@ -45,7 +59,15 @@ class Curve {
 
   void modifyPoint(float x, float y, int point_index);
 
-  int getNumPoints();
+  int getNumPoints() const;
+  int getKnotInterval(float u) const;
+
+  float& getKnotAt(int knot_index);
+  void incrKnotAt(int knot_index);
+  void decrKnotAt(int knot_index);
+
+  int getNumKnots() const;
+  int getOrder() const;
 };
 
 #endif //HW4_BEZIER_H

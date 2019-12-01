@@ -15,6 +15,7 @@ class Pointf {
 
   Pointf operator* (float n);
   Pointf operator+ (const Pointf& p2);
+  Pointf operator/ (float n);
   friend std::ostream &operator<<(std::ostream &os, const Pointf &pointf);
 };
 

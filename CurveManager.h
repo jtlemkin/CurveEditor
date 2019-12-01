@@ -9,20 +9,23 @@
 #include "Mode.h"
 
 class CurveManager {
+ private:
   std::vector<Curve> curves;
 
   int curve_index;
   int point_index;
+  int knot_index;
 
   bool modifying;
 
   Mode mode;
 
-  Pointf& getSelectedPoint();
-  Curve& getSelectedCurve();
+  int resolution;
+
+  void reset();
 
  public:
-  CurveManager();
+  explicit CurveManager(int resolution);
 
   void displayCurves();
 
@@ -40,6 +43,24 @@ class CurveManager {
   void toggleModifying();
 
   bool isModifying();
+
+  Mode getMode() const;
+
+  float& getSelectedKnot();
+  Pointf& getSelectedPoint();
+  Curve& getSelectedCurve();
+
+  void selectNextKnot();
+  void selectPreviousKnot();
+  void incrKnot();
+  void decrKnot();
+
+  int getKnot_index() const;
+
+  void saveState();
+  void loadState();
+
+  void toggleMode();
 };
 
 #endif //HW4_CURVEMANAGER_H

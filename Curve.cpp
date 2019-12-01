@@ -5,7 +5,11 @@
 #include <iostream>
 #include "Curve.h"
 
-Curve::Curve() : selected(false) {}
+Curve::Curve() : selected(false), order(2) {
+  for (int i = 0; i < order + 1; i++) {
+    knots.push_back((float) i);
+  }
+}
 
 std::vector<Pointf> &Curve::getPoints() {
   return points;
@@ -13,11 +17,13 @@ std::vector<Pointf> &Curve::getPoints() {
 void Curve::display(int resolution, Mode mode) const {
   glPointSize(5);
 
-  for (const auto& point : points) {
-    glBegin(GL_POINTS);
-    glColor3f(0, 0, 0);
-    glVertex3f(point.x, point.y, 0);
-    glEnd();
+  if (selected) {
+    for (const auto& point : points) {
+      glBegin(GL_POINTS);
+      glColor3f(0, 0, 0);
+      glVertex3f(point.x, point.y, 0);
+      glEnd();
+    }
   }
 
   if (selected) {
@@ -30,7 +36,8 @@ void Curve::display(int resolution, Mode mode) const {
     case bezier:
       displayBezier(resolution);
       break;
-    case bspline:
+    case spline:
+      displaySpline(resolution);
       break;
   }
 }
@@ -64,13 +71,19 @@ void Curve::addPoint(float x, float y, int point_index) {
   } else {
     points.insert(points.begin() + point_index + 1, Pointf(x, y));
   }
+
+  knots.push_back(knots.back() + 1.0f);
 }
-int Curve::getNumPoints() {
+int Curve::getNumPoints() const {
   return (int) points.size();
 }
 void Curve::deletePoint(int point_index) {
   if (!points.empty()) {
     points.erase(points.begin() + point_index);
+  }
+
+  if (knots.size() > order) {
+    knots.pop_back();
   }
 }
 void Curve::modifyPoint(float x, float y, int point_index) {
@@ -94,4 +107,110 @@ void Curve::displayBezier(int resolution) const {
     }
     glEnd();
   }
+}
+
+
+Pointf Curve::computeSplinePoint(float u) const {
+  //knot interval index
+  int I = getKnotInterval(u);
+  int k = getEffectiveOrder();
+
+  Pointf p[k][points.size()];
+
+  for (int i = 0; i < points.size(); ++i) {
+    p[0][i] = points.at(i);
+  }
+
+  float denom, lweight, rweight;
+
+  for (int j = 1; j <= k - 1; ++j) {
+    for (int i = I - (k - 1); i <= I - j; ++i) {
+      denom = knots.at(i + k) - knots.at(i + j);
+      lweight = (knots.at(i + k) - u) / denom;
+      rweight = (u - knots.at(i + j)) / denom;
+
+      p[j][i] = p[j - 1][i] * lweight + p[j - 1][i + 1] * rweight;
+    }
+  }
+
+  return p[k - 1][I - (k - 1)];
+}
+
+void Curve::displaySpline(int resolution) const {
+  if (points.size() >= 2) {
+    glBegin(GL_LINE_STRIP);
+
+    if (selected) {
+      glColor3f(0, 1, 0);
+    } else {
+      glColor3f(0, 0, 0);
+    }
+
+    float range = knots.at(points.size()) - knots.at(getEffectiveOrder() - 1);
+    for (int i = 0; i <= resolution * range; i++) {
+      float u = knots.at(getEffectiveOrder() - 1) + i / (float) resolution;
+      Pointf p = computeSplinePoint(u);
+      glVertex3f(p.x, p.y, 0);
+    }
+    glEnd();
+  }
+}
+
+int Curve::getKnotInterval(float u) const {
+  if (u == knots.at(points.size() + 1)) {
+    return (int) points.size();
+  }
+
+  for(int i = 0; i < knots.size(); ++i) {
+    if (knots.at(i) > u) {
+      return i - 1;
+    }
+  }
+}
+
+int Curve::getEffectiveOrder() const {
+  return order >= points.size() ? (int) points.size() : order;
+}
+int Curve::getOrder() const {
+  return order;
+}
+float &Curve::getKnotAt(int knot_index) {
+  return knots.at(knot_index);
+}
+void Curve::incrKnotAt(int knot_index) {
+  knots.at(knot_index) += 0.1f;
+
+  if (knot_index != knots.size() - 1 && knots.at(knot_index) > knots.at(knot_index + 1)) {
+    knots.at(knot_index) = knots.at(knot_index + 1);
+  }
+}
+void Curve::decrKnotAt(int knot_index) {
+  if (knot_index == 0) {
+    knots.at(knot_index) -= knots.at(0) / 10.0f;
+
+    if (knots.at(0) < 0) {
+      knots.at(0) = 0;
+    }
+  } else {
+    knots.at(knot_index) -= (knots.at(knot_index) - knots.at(knot_index - 1)) / 10.0f;
+  }
+}
+int Curve::getNumKnots() const {
+  return (int) knots.size();
+}
+std::vector<float> &Curve::getKnots() {
+  return knots;
+}
+void Curve::setOrder(int newOrder) {
+  if (newOrder < order) {
+    for (int i = 0; i < order - newOrder; i++) {
+      knots.pop_back();
+    }
+  } else if (newOrder > order) {
+    for (int i = 0; i < newOrder - order; i++) {
+      knots.push_back(knots.back() + 1);
+    }
+  }
+
+  order = newOrder;
 }

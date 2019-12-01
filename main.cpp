@@ -25,8 +25,9 @@ void check();
 void reshape(int width, int height);
 void idle();
 void arrowkey(int key, int x, int y);
-void draw_pix(float x, float y, float r, float g, float b);
 void pix_to_norm(float* x, float* y);
+void displayUI();
+void displayString(const std::string& str, float x, float y);
 
 int screen_width = 500;
 int screen_height = 500;
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
   //initialize opengl variables
   init();
 
-  cm.emplace_back();
+  cm.emplace_back(100);
 
   //start glut event loop
   glutMainLoop();
@@ -106,6 +107,8 @@ void display() {
 
   cm[0].displayCurves();
 
+  displayUI();
+
   //blits the current opengl framebuffer on the screen
   glutSwapBuffers();
   //checks for opengl errors
@@ -127,6 +130,49 @@ void key(unsigned char ch, int x, int y)
       break;
     case 'm':
       cm[0].toggleModifying();
+      break;
+    case '.':
+      cm[0].selectNextKnot();
+      break;
+    case ',':
+      cm[0].selectPreviousKnot();
+      break;
+    case 's':
+      cm[0].saveState();
+      break;
+    case 'l':
+      cm[0].loadState();
+      break;
+    case 't':
+      cm[0].toggleMode();
+      break;
+    case '1':
+      cm[0].getSelectedCurve().setOrder(1);
+      break;
+    case '2':
+      cm[0].getSelectedCurve().setOrder(2);
+      break;
+    case '3':
+      cm[0].getSelectedCurve().setOrder(3);
+      break;
+    case '4':
+      cm[0].getSelectedCurve().setOrder(4);
+      break;
+    case '5':
+      cm[0].getSelectedCurve().setOrder(5);
+      break;
+    case '6':
+      cm[0].getSelectedCurve().setOrder(6);
+      break;
+    case '7':
+      cm[0].getSelectedCurve().setOrder(7);
+      break;
+    case '8':
+      cm[0].getSelectedCurve().setOrder(8);
+      break;
+    case '9':
+      cm[0].getSelectedCurve().setOrder(9);
+      break;
     default:
       break;
   }
@@ -185,9 +231,41 @@ void arrowkey(int key, int x, int y) {
       break;
     case GLUT_KEY_LEFT:
       cm[0].selectPreviousPoint();
+    case GLUT_KEY_UP:
+      cm[0].incrKnot();
+    case GLUT_KEY_DOWN:
+      cm[0].decrKnot();
     default:
       break;
   }
 
   glutPostRedisplay();
+}
+
+void displayString(const std::string& str, float x, float y) {
+  glRasterPos2d(x, y);
+
+  for(const auto& c : str) {
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, c);
+  }
+}
+
+void displayUI() {
+  glColor3f(0, 0, 0);
+
+  const std::string modeStr(cm[0].isModifying() ? "Modifying" : "Inserting");
+  const std::string curveTypeStr(cm[0].getMode() == spline ? "B-Spline" : "Bezier");
+
+  if (cm[0].getMode() == spline) {
+    const std::string kStr = "Order: " + std::to_string(cm[0].getSelectedCurve().getOrder());
+
+    displayString(kStr, .8f, -.95f);
+
+    const std::string knotStr = "Knot " + std::to_string(cm[0].getKnot_index()) + ": " + std::to_string(cm[0].getSelectedKnot());
+
+    displayString(knotStr, -.2f, -.95f);
+  }
+
+  displayString(modeStr, -.95f, .95f);
+  displayString(curveTypeStr, -.95f, -.95f);
 }

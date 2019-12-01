@@ -17,3 +17,6 @@ std::ostream &operator<<(std::ostream &os, const Pointf &pointf) {
   os << "x: " << pointf.x << " y: " << pointf.y;
   return os;
 }
+Pointf Pointf::operator/(float n) {
+  return Pointf(x / n, y / n);
+}

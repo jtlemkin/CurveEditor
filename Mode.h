@@ -5,6 +5,6 @@
 #ifndef HW4_MODE_H
 #define HW4_MODE_H
 
-enum Mode { bezier, bspline };
+enum Mode { bezier, spline };
 
 #endif //HW4_MODE_H
