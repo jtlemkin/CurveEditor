@@ -12,9 +12,9 @@ class CurveManager {
  private:
   std::vector<Curve> curves;
 
-  unsigned long curve_index;
-  unsigned long point_index;
-  unsigned long knot_index;
+  int curve_index;
+  int point_index;
+  int knot_index;
 
   bool modifying;
 

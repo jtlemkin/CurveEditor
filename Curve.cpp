@@ -6,7 +6,7 @@
 #include "Curve.h"
 
 Curve::Curve() : selected(false), order(2) {
-  for (int i = 0; i < order + 1; i++) {
+  for (int i = 0; i < order; i++) {
     knots.push_back((float) i);
   }
 }
