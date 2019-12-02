@@ -146,7 +146,7 @@ void CurveManager::decrKnot() {
   getSelectedCurve().decrKnotAt(knot_index);
 }
 void CurveManager::saveState() {
-  std::ofstream saveFile("/Users/jameslemkin/Developer/ecs175/hw4/curves.txt");
+  std::ofstream saveFile("home/jtlemkin/curves.txt");
 
   saveFile << curves.size() << "\n";
 
@@ -167,7 +167,7 @@ void CurveManager::saveState() {
 }
 
 void CurveManager::loadState() {
-  std::ifstream saveFile("/Users/jameslemkin/Developer/ecs175/hw4/curves.txt");
+  std::ifstream saveFile("/home/jtlemkin/curves.txt");
 
   reset();
 
