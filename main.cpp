@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
   //initialize opengl variables
   init();
 
-  cm.emplace_back(100);
+  cm.emplace_back(10);
 
   //start glut event loop
   glutMainLoop();
@@ -169,6 +169,12 @@ void key(unsigned char ch, int x, int y)
       break;
     case '9':
       cm[0].getSelectedCurve().setOrder(9);
+      break;
+    case 'p':
+      cm[0].incrResolution();
+      break;
+    case 'o':
+      cm[0].decrResolution();
       break;
     default:
       break;

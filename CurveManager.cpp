@@ -225,3 +225,13 @@ void CurveManager::toggleMode() {
     mode = bezier;
   }
 }
+void CurveManager::incrResolution() {
+  resolution++;
+}
+void CurveManager::decrResolution() {
+  resolution--;
+
+  if (resolution < 1) {
+    resolution = 1;
+  }
+}

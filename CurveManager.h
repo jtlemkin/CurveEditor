@@ -61,6 +61,9 @@ class CurveManager {
   void loadState();
 
   void toggleMode();
+
+  void incrResolution();
+  void decrResolution();
 };
 
 #endif //HW4_CURVEMANAGER_H
