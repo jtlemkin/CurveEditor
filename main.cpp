@@ -146,9 +146,6 @@ void key(unsigned char ch, int x, int y)
     case 't':
       cm[0].toggleMode();
       break;
-    case '1':
-      cm[0].getSelectedCurve().setOrder(1);
-      break;
     case '2':
       cm[0].getSelectedCurve().setOrder(2);
       break;
@@ -231,10 +228,13 @@ void arrowkey(int key, int x, int y) {
       break;
     case GLUT_KEY_LEFT:
       cm[0].selectPreviousPoint();
+      break;
     case GLUT_KEY_UP:
       cm[0].incrKnot();
+      break;
     case GLUT_KEY_DOWN:
       cm[0].decrKnot();
+      break;
     default:
       break;
   }

@@ -60,11 +60,11 @@ class Curve {
   void modifyPoint(float x, float y, int point_index);
 
   int getNumPoints() const;
-  int getKnotInterval(float u) const;
+  unsigned long getKnotInterval(float u) const;
 
-  float& getKnotAt(int knot_index);
-  void incrKnotAt(int knot_index);
-  void decrKnotAt(int knot_index);
+  float& getKnotAt(unsigned long knot_index);
+  void incrKnotAt(unsigned long knot_index);
+  void decrKnotAt(unsigned long knot_index);
 
   int getNumKnots() const;
   int getOrder() const;

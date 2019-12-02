@@ -174,7 +174,7 @@ void CurveManager::loadState() {
   int num_curves;
   saveFile >> num_curves;
 
-  for (int i = 0; i < num_curves; i++) {
+  for (unsigned long i = 0; i < num_curves; i++) {
     int num_points;
     saveFile >> num_points;
 

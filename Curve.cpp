@@ -112,7 +112,7 @@ void Curve::displayBezier(int resolution) const {
 
 Pointf Curve::computeSplinePoint(float u) const {
   //knot interval index
-  int I = getKnotInterval(u);
+  unsigned long I = getKnotInterval(u);
   int k = getEffectiveOrder();
 
   Pointf p[k][points.size()];
@@ -156,12 +156,12 @@ void Curve::displaySpline(int resolution) const {
   }
 }
 
-int Curve::getKnotInterval(float u) const {
+unsigned long Curve::getKnotInterval(float u) const {
   if (u == knots.at(points.size() + 1)) {
     return (int) points.size();
   }
 
-  for(int i = 0; i < knots.size(); ++i) {
+  for(unsigned long i = 0; i < knots.size(); ++i) {
     if (knots.at(i) > u) {
       return i - 1;
     }
@@ -174,25 +174,25 @@ int Curve::getEffectiveOrder() const {
 int Curve::getOrder() const {
   return order;
 }
-float &Curve::getKnotAt(int knot_index) {
+float &Curve::getKnotAt(unsigned long knot_index) {
   return knots.at(knot_index);
 }
-void Curve::incrKnotAt(int knot_index) {
+void Curve::incrKnotAt(unsigned long knot_index) {
   knots.at(knot_index) += 0.1f;
 
   if (knot_index != knots.size() - 1 && knots.at(knot_index) > knots.at(knot_index + 1)) {
     knots.at(knot_index) = knots.at(knot_index + 1);
   }
 }
-void Curve::decrKnotAt(int knot_index) {
-  if (knot_index == 0) {
-    knots.at(knot_index) -= knots.at(0) / 10.0f;
+void Curve::decrKnotAt(unsigned long knot_index) {
+  knots.at(knot_index) -= 0.1f;
 
-    if (knots.at(0) < 0) {
-      knots.at(0) = 0;
-    }
-  } else {
-    knots.at(knot_index) -= (knots.at(knot_index) - knots.at(knot_index - 1)) / 10.0f;
+  if (knots.at(knot_index) < 0) {
+    knots.at(knot_index) = 0;
+  }
+
+  if (knot_index != 0 && knots.at(knot_index) < knots.at(knot_index - 1)) {
+    knots.at(knot_index) = knots.at(knot_index - 1);
   }
 }
 int Curve::getNumKnots() const {
