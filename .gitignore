@@ -1,2 +1,6 @@
 .idea/
 cmake-build-debug/
+CMakeFiles/
+Makefile
+*.cmake
+CMakeCache.txt
