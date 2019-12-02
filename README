@@ -1,0 +1,38 @@
+Hello Alex or Sai!
+
+Compile with the command: 'cmake CMakeLists.txt' and then 'make'
+
+Run the executable (hw4).
+
+On the top left, you will see the text 'inserting' or 'modifying', which indicates whether your mouse click will insert
+a new point, or change the position of the current selected point. Press the 'm' key to change modes.
+
+On the bottom left, you will see text indicating whether you are editing B-spline or bezier curves. If in B-spline mode,
+you will see additional text such as the the current knot selected, its position, and the order of the curve. Press the
+'t' key to change curve types.
+
+Click on the screen to create a point! It should appear in blue indicating that the current point is selected. If in
+inserting mode, the the next click will insert a point after the current point selected. You can press the left or
+right arrow keys to select a different point.
+
+Add as many points as your heart desires. To create a new curve, press the 'n' click and click on the window to create
+a new point. You can tell a curve is selcted because it is green and has visible control points.
+
+Shortcuts:
+
+tab -> select next curve
+n -> create new curve
+left -> select previous control point
+right -> select next control point
+d -> delete point
+. -> select next knot
+, -> select previous knot
+up -> increment knot value
+down -> decrement knot value
+2-9 -> set order of spline curve
+m -> toggle modifying
+t -> toggle curve type
+p -> increase resolution
+o -> decrease resolution
+s -> save state
+l -> load state
